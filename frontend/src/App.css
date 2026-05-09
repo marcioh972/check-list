@@ -1,0 +1,605 @@
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&family=Lora:ital,wght@0,400;0,600;1,400&display=swap');
+
+/* ── Variáveis ─────────────────────────────────────────── */
+:root {
+  --paper:     #fdf6e3;
+  --paper2:    #f5ead0;
+  --ink:       #2c1f0e;
+  --ink-light: #a1a1a1;
+  --line:      #d9c9a8;
+  --accent:    #c0392b;
+  --accent2:   #27ae60;
+  --shadow:    rgba(44, 31, 14, 0.12);
+  --tape:      rgba(243, 230, 187, 0.55);
+}
+
+/* ── Reset ─────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  min-height: 100vh;
+  background-color: #faefdd;
+  background-image:
+    radial-gradient(ellipse at 20% 20%, rgba(200,180,140,0.4) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 80%, rgba(180,160,120,0.3) 0%, transparent 55%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.06'/%3E%3C/svg%3E");
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 48px 16px 80px;
+  font-family: 'Lora', serif;
+}
+
+/* ── Caderno ───────────────────────────────────────────── */
+.notebook {
+  width: 100%;
+  max-width: 560px;
+  background: var(--paper);
+  border-radius: 3px 12px 12px 3px;
+  box-shadow:
+    -6px 0 0 #c8b89a,
+    0 8px 32px var(--shadow),
+    0 2px 6px var(--shadow),
+    4px 4px 0 rgba(0,0,0,0.06);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Espiral esquerda */
+.notebook::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 42px;
+  background: #b5a48a;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent,
+    transparent 28px,
+    rgba(0,0,0,0.08) 28px,
+    rgba(0,0,0,0.08) 32px
+  );
+  z-index: 1;
+}
+
+/* ── Furos ─────────────────────────────────────────────── */
+.holes {
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 42px;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+  padding: 24px 0;
+  pointer-events: none;
+}
+
+.hole {
+  width: 18px; height: 18px;
+  background: #e8dcc8;
+  border-radius: 50%;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.25), 0 1px 0 rgba(255,255,255,0.3);
+}
+
+/* ── Conteúdo ──────────────────────────────────────────── */
+.content {
+  margin-left: 42px;
+  padding: 36px 32px 40px;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent,
+    transparent 31px,
+    var(--line) 31px,
+    var(--line) 32px
+  );
+  background-position: 0 59px;
+  min-height: 600px;
+  position: relative;
+}
+
+/* ── Cabeçalho ─────────────────────────────────────────── */
+.header { margin-bottom: 28px; padding-bottom: 4px; }
+
+.title {
+  font-family: 'Caveat', cursive;
+  font-size: 2.6rem;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1;
+  display: inline-block;
+}
+
+.title::after {
+  content: '';
+  display: block;
+  height: 3px;
+  background: var(--accent);
+  border-radius: 2px;
+  margin-top: 4px;
+  transform: rotate(-0.5deg);
+  opacity: 0.75;
+}
+
+.subtitle {
+  font-family: 'Caveat', cursive;
+  font-size: 1rem;
+  color: var(--ink-light);
+  margin-top: 10px;
+  font-style: italic;
+}
+
+/* ── Input ─────────────────────────────────────────────── */
+.input-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 24px;
+  align-items: center;
+}
+
+.task-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  border-bottom: 2px dashed var(--ink-light);
+  padding: 8px 4px;
+  font-family: 'Caveat', cursive;
+  font-size: 1.25rem;
+  color: var(--ink);
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.task-input::placeholder { color: var(--line); font-style: italic; }
+.task-input:focus { border-color: var(--accent); }
+
+.add-btn {
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  border: 2px solid var(--ink);
+  background: var(--ink);
+  color: var(--paper);
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: transform 0.15s, background 0.15s;
+  flex-shrink: 0;
+}
+
+.add-btn:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+  transform: rotate(90deg) scale(1.1);
+}
+
+/* ── Filtros ───────────────────────────────────────────── */
+.filters {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.filter-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--ink-light);
+  font-family: 'Caveat', cursive;
+  font-size: 1.05rem;
+  padding: 2px 0;
+  position: relative;
+  transition: color 0.2s;
+}
+
+.filter-btn.active { color: var(--ink); font-weight: 600; }
+
+.filter-btn.active::after {
+  content: '';
+  position: absolute;
+  bottom: -2px; left: 0; right: 0;
+  height: 2px;
+  background: var(--accent);
+  border-radius: 2px;
+}
+
+/* ── Lista ─────────────────────────────────────────────── */
+.task-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+/* ── Item ──────────────────────────────────────────────── */
+.task-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 10px 6px;
+  border-radius: 4px;
+  position: relative;
+  transition: background 0.15s;
+  animation: slide-in 0.25s ease-out;
+}
+
+@keyframes slide-in {
+  from { opacity: 0; transform: translateX(-14px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+.task-item:hover { background: rgba(0,0,0,0.02); }
+
+/* Checkbox customizado */
+.check-wrap {
+  flex-shrink: 0;
+  margin-top: 3px;
+  cursor: pointer;
+}
+
+.check-box {
+  display: block;
+  width: 20px; height: 20px;
+  border: 2px solid var(--ink-light);
+  border-radius: 3px;
+  position: relative;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.check-box::after {
+  content: '✓';
+  position: absolute;
+  inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Caveat', cursive;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--paper);
+  opacity: 0;
+  transform: scale(0.5);
+  transition: opacity 0.15s, transform 0.15s;
+}
+
+.check-box.checked {
+  background: var(--accent2);
+  border-color: var(--accent2);
+}
+
+.check-box.checked::after {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Texto */
+.task-text {
+  flex: 1;
+  font-family: 'Caveat', cursive;
+  font-size: 1.2rem;
+  color: var(--ink);
+  line-height: 1.4;
+  cursor: pointer;
+  word-break: break-word;
+  transition: color 0.2s;
+}
+
+.task-item.done .task-text {
+  color: var(--ink-light);
+  text-decoration: line-through;
+  text-decoration-color: var(--accent);
+}
+
+/* Botão deletar */
+.del-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--line);
+  font-size: 1.2rem;
+  padding: 0 4px;
+  opacity: 0;
+  transition: opacity 0.15s, color 0.15s;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.task-item:hover .del-btn { opacity: 1; }
+.del-btn:hover { color: var(--accent); }
+
+/* ── Empty ─────────────────────────────────────────────── */
+.empty {
+  text-align: center;
+  padding: 48px 0 24px;
+  font-family: 'Caveat', cursive;
+  font-size: 1.15rem;
+  color: var(--line);
+  font-style: italic;
+}
+
+.empty-icon {
+  font-size: 2.5rem;
+  display: block;
+  margin-bottom: 10px;
+  opacity: 0.5;
+}
+
+/* ── Loading / Error ───────────────────────────────────── */
+.loading {
+  text-align: center;
+  padding: 32px 0;
+  font-family: 'Caveat', cursive;
+  font-size: 1.1rem;
+  color: var(--ink-light);
+  font-style: italic;
+}
+
+.error-msg {
+  font-family: 'Caveat', cursive;
+  font-size: 1rem;
+  color: var(--accent);
+  margin-bottom: 12px;
+  padding: 6px 10px;
+  border-left: 3px solid var(--accent);
+  background: rgba(192,57,43,0.06);
+  border-radius: 2px;
+}
+
+/* ── Rodapé ────────────────────────────────────────────── */
+.footer {
+  margin-top: 28px;
+  padding-top: 12px;
+  border-top: 1px dashed var(--line);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: 'Caveat', cursive;
+  font-size: 0.95rem;
+  color: var(--ink-light);
+}
+
+.clear-btn {
+  background: none;
+  border: none;
+  font-family: 'Caveat', cursive;
+  font-size: 0.95rem;
+  color: var(--ink-light);
+  cursor: pointer;
+  text-decoration: underline dotted;
+  transition: color 0.15s;
+}
+
+.clear-btn:hover { color: var(--accent); }
+
+/* ── Fita ──────────────────────────────────────────────── */
+.tape {
+  position: absolute;
+  top: 18px; right: 28px;
+  width: 60px; height: 22px;
+  background: var(--tape);
+  transform: rotate(2deg);
+  border-radius: 2px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+/* ── Animação remoção ──────────────────────────────────── */
+.task-item.removing {
+  animation: slide-out 0.22s ease-in forwards;
+}
+
+@keyframes slide-out {
+  to { opacity: 0; transform: translateX(20px) scaleY(0.8); max-height: 0; padding: 0; }
+}
+
+/* ---- Minimal theme override ---- */
+:root {
+  --paper: #ffffff;
+  --ink: #111827;
+  --ink-light: #6b7280;
+  --line: #e5e7eb;
+  --accent: #111827;
+  --accent2: #16a34a;
+  --shadow: rgba(17, 24, 39, 0.08);
+}
+
+body {
+  background: #f5f7fb;
+  font-family: Inter, "Segoe UI", system-ui, -apple-system, sans-serif;
+  padding: 32px 16px 56px;
+}
+
+.notebook {
+  max-width: 680px;
+  border-radius: 14px;
+  border: 1px solid var(--line);
+  box-shadow: 0 12px 30px var(--shadow);
+}
+
+.notebook::before,
+.holes,
+.tape,
+.empty-icon {
+  display: none;
+}
+
+.content {
+  margin-left: 0;
+  min-height: auto;
+  padding: 28px 24px;
+  background: #fff;
+  background-image: none;
+}
+
+.header {
+  margin-bottom: 18px;
+}
+
+.title {
+  font-family: Inter, "Segoe UI", system-ui, -apple-system, sans-serif;
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.title::after {
+  display: none;
+}
+
+.subtitle {
+  margin-top: 6px;
+  font-family: Inter, "Segoe UI", system-ui, -apple-system, sans-serif;
+  font-style: normal;
+  font-size: 0.88rem;
+}
+
+.input-row {
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.task-input {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-family: Inter, "Segoe UI", system-ui, -apple-system, sans-serif;
+  font-size: 0.94rem;
+}
+
+.task-input:focus,
+.edit-input:focus {
+  border-color: #9ca3af;
+}
+
+.add-btn {
+  width: auto;
+  height: 40px;
+  border-radius: 10px;
+  border: 1px solid var(--ink);
+  background: var(--ink);
+  padding: 0 14px;
+  font-size: 1.1rem;
+}
+
+.add-btn:hover {
+  transform: none;
+  background: #000;
+  border-color: #000;
+}
+
+.filters {
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.filter-btn {
+  font-family: Inter, "Segoe UI", system-ui, -apple-system, sans-serif;
+  font-size: 0.84rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 6px 12px;
+  color: #4b5563;
+}
+
+.filter-btn.active {
+  background: #111827;
+  border-color: #111827;
+  color: #fff;
+}
+
+.filter-btn.active::after {
+  display: none;
+}
+
+.task-list {
+  gap: 8px;
+}
+
+.task-item {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 10px 12px;
+  align-items: center;
+  gap: 10px;
+}
+
+.task-item:hover {
+  background: #f9fafb;
+}
+
+.check-box {
+  width: 18px;
+  height: 18px;
+}
+
+.task-text {
+  font-family: Inter, "Segoe UI", system-ui, -apple-system, sans-serif;
+  font-size: 0.93rem;
+  line-height: 1.35;
+}
+
+.edit-wrap {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.edit-input {
+  flex: 1;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 8px 10px;
+  outline: none;
+  font-size: 0.9rem;
+  font-family: Inter, "Segoe UI", system-ui, -apple-system, sans-serif;
+}
+
+.action-btn {
+  border: 1px solid #d1d5db;
+  background: #fff;
+  color: #374151;
+  border-radius: 8px;
+  padding: 6px 10px;
+  cursor: pointer;
+  font-size: 0.78rem;
+}
+
+.save-btn {
+  border-color: #111827;
+  background: #111827;
+  color: #fff;
+}
+
+.del-btn {
+  opacity: 1;
+  color: #9ca3af;
+}
+
+.loading,
+.error-msg,
+.empty,
+.footer,
+.clear-btn {
+  font-family: Inter, "Segoe UI", system-ui, -apple-system, sans-serif;
+}
+
+.error-msg {
+  border-left: none;
+  border: 1px solid #fecaca;
+  background: #fef2f2;
+  border-radius: 8px;
+  padding: 8px 10px;
+}
+
+.footer {
+  border-top: 1px solid var(--line);
+  margin-top: 16px;
+  padding-top: 12px;
+  font-size: 0.82rem;
+}
+
+.clear-btn {
+  text-decoration: none;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  padding: 5px 10px;
+}
