@@ -64,12 +64,4 @@ A aplicação abre em `http://localhost:5173`.
 | DELETE | `/api/tasks/{id}`       | Remover tarefa             |
 | DELETE | `/api/tasks/done`       | Limpar todas concluídas    |
 
-## Banco de dados
 
-Por padrão usa **H2 em memória** (dados são perdidos ao reiniciar).  
-Para produção.
-
-
-  <scope>runtime</scope>
-</dependency>
-```
